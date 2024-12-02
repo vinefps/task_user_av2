@@ -31,6 +31,20 @@ test('Deve criar uma tarefa', async () => {
     expect(res.body).toHaveProperty('createdAt');
     expect(res.body).toHaveProperty('updatedAt');
 });
+// tests/task.test.js
+
+test('Deve listar tarefas do usuário', async () => {
+    // Criar uma tarefa
+    await Task.create({ title: 'Tarefa 1' });
+
+    const res = await request(app)
+        .get('/tasks')
+        .set('Authorization', `Bearer ${token}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(Array.isArray(res.body.tasks)).toBe(true);
+});
+
 
 afterAll(async () => {
     await sequelize.close();

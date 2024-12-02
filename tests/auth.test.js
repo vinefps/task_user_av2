@@ -27,6 +27,22 @@ try {
             expect(res.body).toHaveProperty('error'); // Opcional: validar mensagem de erro
         });
     });
+    test('Deve fazer login com sucesso', async () => {
+        // Primeiro, registre um usuário
+        await request(app).post('/auth/register').send({
+            username: 'testuser',
+            password: '123456',
+        });
+
+        // Em seguida, faça login
+        const res = await request(app).post('/auth/login').send({
+            username: 'testuser',
+            password: '123456',
+        });
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toHaveProperty('token');
+    });
 
 } catch (error) {
     console.error('Erro no teste:', error);

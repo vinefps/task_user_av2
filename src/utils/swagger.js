@@ -1,28 +1,38 @@
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 
-// Configuração básica do Swagger
-const swaggerOptions = {
+const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'API APPWEB',
+            title: 'API de Tarefas',
             version: '1.0.0',
-            description: 'Documentação da API APPWEB usando Swagger',
+            description: 'Documentação da API de Tarefas',
         },
         servers: [
             {
-                url: 'http://localhost:3000', // URL base do servidor
+                url: 'http://localhost:3000',
+            },
+        ],
+        components: {
+            securitySchemes: {
+                BearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                },
+            },
+        },
+        security: [
+            {
+                BearerAuth: [],
             },
         ],
     },
     apis: ['./src/routes/*.js'], // Caminho para os arquivos com as rotas documentadas
 };
 
-// Inicializa o Swagger JSDoc
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
+const swaggerSpec = swaggerJsdoc(options);
 
 module.exports = {
-    swaggerUi,
     swaggerSpec,
 };

@@ -1,12 +1,13 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../db/database');
+module.exports = (sequelize, DataTypes) => {
+    const Task = sequelize.define('Task', {
+        title: DataTypes.STRING,
+        description: DataTypes.STRING,
+        userId: DataTypes.INTEGER, // Relacionamento com o usuário
+    });
 
-const Task = sequelize.define('Task', {
-    title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    // Outros campos...
-});
+    Task.associate = (models) => {
+        Task.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+    };
 
-module.exports = Task;
+    return Task;
+};

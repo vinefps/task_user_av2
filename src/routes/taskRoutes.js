@@ -3,7 +3,15 @@ const router = express.Router();
 const auth = require('../middlewares/auth');
 const Task = require('../models/task');
 
+// Middleware para autenticação
 router.use(auth);
+
+/**
+ * @swagger
+ * tags:
+ *   name: Tarefas
+ *   description: Endpoints relacionados às tarefas do usuário autenticado
+ */
 
 /**
  * @swagger

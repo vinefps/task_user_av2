@@ -1,41 +1,59 @@
-const User = require('../models/user');
-const bcrypt = require('bcrypt');
+// src/controllers/authController.js
+
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const User = require('../models/user');
 
 exports.register = async (req, res) => {
-    const { username, password } = req.body;
-
-    // Validação manual
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username e password são obrigatórios' });
-    }
-
     try {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const { username, password } = req.body;
 
-        const user = await User.create({ username, password: hashedPassword });
-        res.status(201).json({ user });
-    } catch (err) {
-        if (err.name === 'SequelizeUniqueConstraintError') {
-            return res.status(400).json({ error: 'Username já está em uso' });
+        console.log('Dados recebidos:', { username, password });
+        console.log('Iniciando registro');
+        const existingUser = await User.findOne({ where: { username } });
+        console.log('Verificando usuário existente:', existingUser);
+
+        if (existingUser) {
+            return res.status(400).json({ error: 'Usuário já existe' });
         }
-        res.status(500).send(err);
+        console.log('Dados recebidos para registro:', username);
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await User.create({ username, password: hashedPassword });
+
+        console.log('Usuário criado:', user);
+
+        res.status(201).json({ user });
+    } catch (error) {
+        console.error('Erro ao registrar usuário:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
     }
 };
+
 exports.login = async (req, res) => {
-    const { username, password } = req.body;
+    try {
+        const { username, password } = req.body;
 
-    // Verificando se o usuário existe
-    const user = await User.findOne({ where: { username } });
-    if (!user) return res.status(400).send('Usuário não encontrado');
+        // Encontrar o usuário
+        const user = await User.findOne({ where: { username } });
+        if (!user) {
+            return res.status(401).json({ error: 'Credenciais inválidas' });
+        }
 
-    // Comparando a senha fornecida com a armazenada no banco
-    const validPass = await bcrypt.compare(password, user.password);
-    if (!validPass) return res.status(400).send('Senha inválida');
+        // Verificar a senha
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
+            return res.status(401).json({ error: 'Credenciais inválidas' });
+        }
 
-    // Gerando o token JWT
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' }); // Expira em 1 hora
+        // Gerar token JWT
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+            expiresIn: '1h',
+        });
 
-    res.header('authorization', token).send({ token });
+        res.json({ token });
+    } catch (error) {
+        console.error('Erro ao fazer login:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
 };
