@@ -1,6 +1,7 @@
 // src/app.js
 
 const express = require('express');
+require('dotenv').config(); // Carrega as variáveis de ambiente do .env
 const app = express();
 const swaggerUi = require('swagger-ui-express');
 const { swaggerSpec } = require('./utils/swagger');

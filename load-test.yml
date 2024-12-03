@@ -13,9 +13,23 @@ scenarios:
           capture:
             - json: '$.token'
               as: 'token'
+      - get:
+          url: '/tasks'
+          headers:
+            Authorization: 'Bearer {{ token }}'
       - post:
           url: '/tasks'
           headers:
             Authorization: 'Bearer {{ token }}'
           json:
-            title: 'Tarefa de carga'
+            title: 'Nova tarefa de teste'
+      - put:
+          url: '/tasks/1'
+          headers:
+            Authorization: 'Bearer {{ token }}'
+          json:
+            title: 'Tarefa atualizada'
+      - delete:
+          url: '/tasks/1'
+          headers:
+            Authorization: 'Bearer {{ token }}'

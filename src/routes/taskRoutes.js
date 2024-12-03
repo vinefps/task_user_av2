@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middlewares/auth');
-const Task = require('../models/task');
+const { Task } = require('../models/index');
 
 // Middleware para autenticação
 router.use(auth);
@@ -38,9 +38,15 @@ router.use(auth);
  */
 router.post('/', async (req, res) => {
     try {
+        console.log('Dados recebidos no body:', req.body);
+        console.log('ID do usuário autenticado:', req.user.id);
+
         const task = await Task.create({ ...req.body, userId: req.user.id });
+        console.log('Tarefa criada com sucesso:', task);
+
         res.status(201).json(task);
     } catch (error) {
+        console.error('Erro ao criar tarefa:', error);
         res.status(400).json({ error: 'Erro ao criar tarefa' });
     }
 });
