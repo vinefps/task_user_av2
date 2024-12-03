@@ -1,4 +1,13 @@
-require('dotenv').config(); // Carrega as variáveis de ambiente do .env
+// server.js
+
+// Exibe o valor de NODE_ENV
+console.log('NODE_ENV:', process.env.NODE_ENV);
+
+// Carrega as variáveis de ambiente do .env apenas se não estiver em produção
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const app = require('./src/app'); // Importa o app configurado
 const sequelize = require('./src/db/database'); // Importa a configuração do banco de dados
 

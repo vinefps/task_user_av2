@@ -3,18 +3,20 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const config = require('../../config/config');
 
-// Determinar o ambiente atual (development por padrão)
 const env = process.env.NODE_ENV || 'development';
-const currentConfig = config[env]; // Seleciona as configurações do ambiente atual
+const currentConfig = config[env];
 
-// Inicializar o Sequelize com a configuração correta
-const sequelize = new Sequelize(
-    currentConfig.database,
-    currentConfig.username,
-    currentConfig.password,
-    currentConfig
-);
-
+let sequelize;
+if (currentConfig.use_env_variable) {
+    sequelize = new Sequelize(process.env[currentConfig.use_env_variable], currentConfig);
+} else {
+    sequelize = new Sequelize(
+        currentConfig.database,
+        currentConfig.username,
+        currentConfig.password,
+        currentConfig
+    );
+}
 const db = {};
 
 // Carregar todos os modelos no diretório atual
