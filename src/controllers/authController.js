@@ -13,12 +13,11 @@ exports.register = async (req, res) => {
 
         const existingUser = await User.findOne({ where: { username } });
         if (existingUser) {
+            console.log('Usuário já existe:', existingUser);
             return res.status(400).json({ error: 'Usuário já existe' });
         }
 
-        // Criar o usuário (o hook `beforeCreate` aplicará o hash automaticamente)
         const user = await User.create({ username, password });
-
         console.log('Usuário criado:', user);
 
         res.status(201).json({ user });

@@ -7,12 +7,20 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
-
+const cors = require('cors');
 const app = require('./src/app'); // Importa o app configurado
 const sequelize = require('./src/db/database'); // Importa a configuração do banco de dados
 
 // Porta onde o servidor vai rodar
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});
+;
+
+app.use(cors());
+
 
 // Sincroniza os modelos com o banco de dados
 sequelize
