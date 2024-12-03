@@ -17,12 +17,13 @@ const PORT = process.env.PORT || 3000;
 
 // Sincroniza os modelos com o banco de dados
 sequelize
-    .sync({ force: false }) // Defina como true apenas se quiser recriar tabelas
+    .sync({ force: false })
     .then(() => {
         console.log('Tabelas sincronizadas com sucesso');
-        // Inicia o servidor apenas após o banco ser sincronizado
         app.listen(PORT, () => {
             console.log(`Servidor rodando na porta ${PORT}`);
+            console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+            console.log(`PORT: ${PORT}`);
         });
     })
     .catch((err) => {
