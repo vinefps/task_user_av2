@@ -10,7 +10,10 @@ const { register, login } = require('../controllers/authController');
  *   name: Autenticação
  *   description: Endpoints relacionados à autenticação de usuários
  */
-
+// Rota de teste para retornar "Olá Mundo"
+router.get('/hello', (req, res) => {
+    res.status(200).send('Olá Mundo');
+});
 /**
  * @swagger
  * /auth/register:
@@ -74,5 +77,7 @@ router.post('/register', register);
  *         description: Credenciais inválidas
  */
 router.post('/login', login);
+
+
 
 module.exports = router;
